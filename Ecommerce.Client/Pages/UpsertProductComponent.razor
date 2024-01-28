@@ -1,0 +1,115 @@
+﻿@page "/add-product"
+
+<div class="container">
+    <div class="row">
+        <EditForm Model="MyProduct" Enhance OnValidSubmit="HandleSaveProduct">
+            <DataAnnotationsValidator/>
+  @*           <ValidationSummary/> *@
+            <div class="card">
+                <div class="card-header">Add Product</div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <InputText @bind-Value="MyProduct.Name" class="form-control"></InputText>
+                         <ValidationMessage For="@(() => MyProduct.Name)" class="text-danger" />
+                    </div>
+                     <div class="form-group mt-3">
+                         <label class="form-label">Price</label>
+                         <InputNumber @bind-Value="MyProduct.Price" class="form-control"></InputNumber>
+                         <ValidationMessage For="@(() => MyProduct.Price)" class="text-danger" />
+                     </div>
+                     <div class="form-group mt-3">
+                         <label class="form-label">Quantity</label>
+                         <InputNumber @bind-Value="MyProduct.Quantity" class="form-control"></InputNumber>
+                         <ValidationMessage For="@(() => MyProduct.Quantity)" class="text-danger" />
+                     </div>
+                     <div class="form-group mt-3">
+                         <label class="form-label">Description</label>
+                         <InputTextArea @bind-Value="MyProduct.Description" class="form-control"></InputTextArea>
+                     </div>
+                     <div class="form-group mt-3">
+                       <label class="form-label @(ImageUploadMessage==""?"": "text-danger" )">
+                           @(ImageUploadMessage == "" ? "UploadImage" : ImageUploadMessage)
+                       </label>
+                       <InputFile class="form-control" OnChange="UploadImage"></InputFile>
+                         <ValidationMessage For="@(() => MyProduct.Description)" class="text-danger" />
+                     </div>
+                     <div class="form-group mt-3">
+                         <label class="form-label">Is Featured</label>
+                         <InputCheckbox @bind-Value="MyProduct.IsFeatured" class="form-control"></InputCheckbox>
+                     </div> 
+                 </div>
+                <div class="card-footer">
+                     @if (ShowSaveButton)
+                    {
+                        <button typeof="submit" class="btn btn-outline-primary">
+                            <i class="fa fa-plus"></i>
+                            Save Product
+                        </button>
+                    }
+                    <BusyButtonComponent ShowBusyButton="ShowBusyButton"></BusyButtonComponent>
+                    
+                </div>
+               
+            </div>
+        </EditForm>
+    </div>
+</div> 
+<MessageDialog @ref="messageDialog"></MessageDialog>
+
+@code {
+
+    const int FORMAT_WIDTH_SIZE = 300;
+    const int FORMAT_HIGHT_SIZE = 300;
+    const string FILE_FORMAT = "image/png";
+
+    Product MyProduct = new();
+    string ImageUploadMessage = "";
+    bool ShowSaveButton { get; set; } = true;
+    bool ShowBusyButton { get; set; }
+
+    MessageDialog? messageDialog;
+
+    async Task HandleSaveProduct()
+    {
+        ShowSaveButton = false;
+        ShowBusyButton = !ShowSaveButton;
+        if (string.IsNullOrEmpty(MyProduct.Base64Img))
+        {
+            messageDialog!.SetDialogValues("warning", "You need to choose image");
+            SetMessageDialog();
+            return;
+        }
+        var (flag,message) = await ProductService.AddProduct(MyProduct);
+        if (flag)
+            messageDialog!.SetDialogValues("success", message);
+        else
+            messageDialog!.SetDialogValues("danger", message);
+        SetMessageDialog();
+        return;
+    }
+    async Task UploadImage(InputFileChangeEventArgs e)
+    {
+        if (e.File.Name.ToLower().Contains(".png"))
+        {
+            var resizedIamge = await e.File.RequestImageFileAsync(FILE_FORMAT, FORMAT_WIDTH_SIZE, FORMAT_HIGHT_SIZE);
+            var buffer = new byte[resizedIamge.Size];
+            await resizedIamge.OpenReadStream().ReadAsync(buffer);
+            var imageData = $"data:{FILE_FORMAT};base64,{Convert.ToBase64String(buffer)}";
+
+            ImageUploadMessage = "";
+            MyProduct.Base64Img = imageData;
+            imageData = "";
+            return;
+        }
+        ImageUploadMessage = "PNG file needed";
+        return;
+    }
+    private async void SetMessageDialog()
+    {
+        await messageDialog!.ShowMessage();
+        ShowBusyButton = false;
+        ShowSaveButton = !ShowBusyButton;
+        StateHasChanged();
+    }
+}

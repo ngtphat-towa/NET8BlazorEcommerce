@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.API", "Ecommerce.API\Ecommerce.API.csproj", "{706913A3-CCB2-4385-A26F-2C8B0BD61288}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.API", "Ecommerce.API\Ecommerce.API.csproj", "{706913A3-CCB2-4385-A26F-2C8B0BD61288}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Client", "Ecommerce.Client\Ecommerce.Client.csproj", "{75B11873-D1C3-49C2-813D-A5D96365C64A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.Client", "Ecommerce.Client\Ecommerce.Client.csproj", "{75B11873-D1C3-49C2-813D-A5D96365C64A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.SharedLibrary", "Ecommerce.SharedLibrary\Ecommerce.SharedLibrary.csproj", "{0D2F4E1F-D8FD-4D3E-97CF-5C0039BB1D77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce.SharedLibrary", "Ecommerce.SharedLibrary\Ecommerce.SharedLibrary.csproj", "{0D2F4E1F-D8FD-4D3E-97CF-5C0039BB1D77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
