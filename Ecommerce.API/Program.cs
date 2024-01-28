@@ -1,3 +1,8 @@
+using Ecommerce.API.Data;
+using Ecommerce.API.Repositories;
+using Ecommerce.SharedLibrary.Contracts;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,6 +13,17 @@ builder.Services.AddRazorPages();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Starting
+builder.Services
+  .AddDbContext<AppDbContext>(
+    options =>
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("Default")
+            ?? throw new InvalidOperationException("Connection string not found!"));
+    })
+  .AddScoped<IProduct, ProductRepository>();
+
+//Ending
 
 var app = builder.Build();
 
